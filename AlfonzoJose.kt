@@ -28,6 +28,39 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
       Sistema de alcantarillado puede buscarse con el grafo en dado caso
     */
+    val n = ciudad.size
+    val m = ciudad[0].size
+
+    val save1 = Array(n) { Array(m) {0} }
+    val save2 = Array(n) { Array(m) {0} }
+
+    for(i in 0 until n){
+        var max = 0
+        for (j in 0 until m){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            save1[i][j] = max
+        }
+        max = 0
+        for (j in m-1 downTo 0){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            if(max < save1[i][j] ) save1[i][j] = max
+        }
+    }
+
+    for(j in 0 until m){
+        var max = 0
+        for(i in 0 until n){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            save2[i][j] = max
+        }
+        max = 0
+        for (i in n-1 downTo 0){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            if(max < save2[i][j] ) save2[i][j] = max
+        }
+    }
+
+    
 
     return 0
 }
@@ -41,7 +74,8 @@ fun entrada(): List<List<Int>>{
     File(archivo).bufferedReader().useLines { lines ->
 
         // Acceder a cada línea para guardar el tamaño de los edificios
-        lines.drop(1).forEach { line ->
+        lines.forEach { line ->
+            println(line)
             val edf = line.split(" ")
             ciudad.add(edf.map {it.toInt()})
         }
