@@ -3,33 +3,46 @@ import java.io.BufferedReader
 
 fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
-    /*grafo de precedencia??? no se donde
-      como interpreto las posiciones???
-      necesito apoyarme en la matriz para conocer la posición de los edificios
-      
-      Guardar cada edificio como un vertice y su capacidad de agua, quizás sirva
-      además puedo conectarlo con los adyacentes que puedan tener agua
-      si ninguno alrededor puede contener agua no se conecta
+    var tobos: Int = 0
 
-      Hay que tomar en cuenta la actualización de los valores por si se puede
-      guardar más agua en una sección gracias a edificios adyacentes
+    var maximos: MutableList<MutableList<MutableList<Int>>> = MutableList(ciudad.size) { MutableList(ciudad[it].size) { MutableList(4){0} } }
+    for(i in 0..<ciudad.size){
+        val fila: List<Int> = ciudad[i]
+        maximos[i][0][0] = ciudad[i][0]
+        for( x in 1..<fila.size){
+            maximos[i][x][0] = maxOf(ciudad[i][x],maximos[i][x-1][0])
+        }
+    }
+    for(i in 0..<ciudad.size){
+        val fila: List<Int> = ciudad[i]
+        maximos[i][fila.size-1][1] = ciudad[i][fila.size-1]
+        for( x in fila.size-2 downTo 0){
+            maximos[i][x][1] = maxOf(ciudad[i][x],maximos[i][x+1][1])
+        }
+    }
+    for(j in 0..<ciudad[0].size){
+        val columna: List<Int> = ciudad.map {it[j]}
+        maximos[0][j][2] = ciudad[0][j]
+        for(x in 1..<ciudad.size){
+            maximos[x][j][2] = maxOf(ciudad[x][j],maximos[x-1][j][2])
+        }
+    }
+    for(j in 0..<ciudad[0].size){
+        val columna: List<Int> = ciudad.map {it[j]}
+        maximos[ciudad.size-1][j][3] = ciudad[ciudad.size-1][j]
+        for(x in ciudad.size-2 downTo 0){
+            maximos[x][j][3] = maxOf(ciudad[x][j],maximos[x+1][j][3])
+        }
+    }
+    for(i in 1..<ciudad.size-1){
+        for(j in 1..<ciudad[0].size-1){
+            tobos += maximos[i][j].min() - ciudad[i][j]
+        }
+    }
+    
+    println(maximos)
 
-      Una opción es crear un grafo basado en las capas, por ejemplo:
-      capa 0 el suelo
-      capa 1 edificios de tamaño 1
-      capa 2 ....
-      .
-      .
-      hasta el eficio más alto
-
-      Puede funcionar pero va a continuar dependiendo de la matriz para conocer
-      si puede contener agua (no está en el borde) y cuanto es lo máximo que 
-      puede contener basado en los edificios adyacentes
-
-      Sistema de alcantarillado puede buscarse con el grafo en dado caso
-    */
-
-    return 0
+    return tobos
 }
 
 // Tomar datos del archivo de entrada atlantis.txt y almacenarlos
@@ -41,7 +54,7 @@ fun entrada(): List<List<Int>>{
     File(archivo).bufferedReader().useLines { lines ->
 
         // Acceder a cada línea para guardar el tamaño de los edificios
-        lines.drop(1).forEach { line ->
+        lines.forEach { line ->
             val edf = line.split(" ")
             ciudad.add(edf.map {it.toInt()})
         }
