@@ -1,7 +1,7 @@
 KC = kotlinc
 KFLAGS = -include-runtime
 PROG = Main.jar
-SRC = AlfonzoJose.kt
+SRC = AlfonzoJose.kt ListaAdyacenciaGrafo.kt Grafo.kt
 SC = runMain.sh
 
 all:

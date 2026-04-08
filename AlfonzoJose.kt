@@ -1,5 +1,6 @@
 import java.io.File
 import java.io.BufferedReader
+import java.util.Queue
 
 fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
@@ -60,10 +61,46 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
         }
     }
 
-    
+    val grafo: Grafo<String> = ListaAdyacenciaGrafo()
 
-    return 0
+    var atras = Pair("",0)
+    for(i in 0 until n){
+        for(j in 0 until m){
+            grafo.agregarVertice("${i}${j}", save1[i][j])
+
+            if(atras.second == save1[i][j]) grafo.conectar("${i}${j}", atras.first)
+            atras = Pair("${i}${j}", save1[i][j])
+        }
+        println()
+    }
+
+
+    for(i in 0 until n){
+        for(j in 0 until m-1){
+            if(save2[i][j] < grafo.lvlAgua("${i}${j}")) {
+                grafo.setLvl("${i}${j}", save2[i][j])
+                grafo.obtenerArcosSalida("${i}${j}").forEach{
+
+                }
+            }
+        }
+    }
+
+    var tobos = 0
+    for (i in 0 until n){
+        for(j in 0 until m){
+            tobos = (grafo.lvlAgua("${i}${j}") - ciudad[i][j]) + tobos
+        }
+    }
+
+    return tobos
 }
+
+fun nivelarAgua(){
+    var cola = ArrayDeque<String>()
+    var visitados = 
+}
+
 
 // Tomar datos del archivo de entrada atlantis.txt y almacenarlos
 fun entrada(): List<List<Int>>{
@@ -75,7 +112,6 @@ fun entrada(): List<List<Int>>{
 
         // Acceder a cada línea para guardar el tamaño de los edificios
         lines.forEach { line ->
-            println(line)
             val edf = line.split(" ")
             ciudad.add(edf.map {it.toInt()})
         }
