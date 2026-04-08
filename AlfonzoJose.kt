@@ -1,6 +1,6 @@
 import java.io.File
 import java.io.BufferedReader
-import java.util.Queue
+import kotlin.math.max
 
 fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
@@ -63,27 +63,38 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
     val grafo: Grafo<String> = ListaAdyacenciaGrafo()
 
-    var atras = Pair("",0)
+    var atras = Pair("",-1)
     for(i in 0 until n){
         for(j in 0 until m){
-            grafo.agregarVertice("${i}${j}", save1[i][j])
-
-            if(atras.second == save1[i][j]) grafo.conectar("${i}${j}", atras.first)
+            grafo.agregarVertice("${i}${j}", max(save1[i][j], ciudad[i][j]))
+            print("${save1[i][j]} ")
+            if(ciudad[i][j] < save1[i][j] && atras.second == save1[i][j]){
+                grafo.conectar("${i}${j}", atras.first)
+            }
             atras = Pair("${i}${j}", save1[i][j])
         }
         println()
     }
-
+    println()
 
     for(i in 0 until n){
-        for(j in 0 until m-1){
+        for(j in 0 until m){
             if(save2[i][j] < grafo.lvlAgua("${i}${j}")) {
-                grafo.setLvl("${i}${j}", save2[i][j])
-                grafo.obtenerArcosSalida("${i}${j}").forEach{
-
-                }
+                save1[i][j] = save2[i][j]
+                nivelarAgua(grafo, "${i}${j}", save2[i][j], ciudad)
             }
+            print("${save1[i][j]} ")
         }
+        println()
+    }
+
+    println()
+
+    for(i in 0 until n){
+        for(j in 0 until m){
+            print("${grafo.lvlAgua("${i}${j}")} ")
+        }
+        println()
     }
 
     var tobos = 0
@@ -96,9 +107,23 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
     return tobos
 }
 
-fun nivelarAgua(){
+fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
     var cola = ArrayDeque<String>()
-    var visitados = 
+    var visitados = mutableMapOf<String,Boolean>()
+
+    cola.addLast(v)
+    while(cola.isNotEmpty()){
+        var t = cola.removeFirst()
+        visitados.put(t,true)
+        val i = t[0] - '0'
+        val j = t[1] - '0'
+        G.setLvl(t, max(s, ciudad[i][j]))
+
+        for(e in G.obtenerArcosSalida(t)) {
+            if(e in visitados) continue
+            cola.addLast(e)
+        }
+    }
 }
 
 
