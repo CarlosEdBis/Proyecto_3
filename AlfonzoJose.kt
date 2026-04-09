@@ -3,38 +3,13 @@ import java.io.BufferedReader
 import kotlin.math.max
 
 fun cubosDeAgua(ciudad: List<List<Int>>): Int{
-
-    /*grafo de precedencia??? no se donde
-      como interpreto las posiciones???
-      necesito apoyarme en la matriz para conocer la posición de los edificios
-      
-      Guardar cada edificio como un vertice y su capacidad de agua, quizás sirva
-      además puedo conectarlo con los adyacentes que puedan tener agua
-      si ninguno alrededor puede contener agua no se conecta
-
-      Hay que tomar en cuenta la actualización de los valores por si se puede
-      guardar más agua en una sección gracias a edificios adyacentes
-
-      Una opción es crear un grafo basado en las capas, por ejemplo:
-      capa 0 el suelo
-      capa 1 edificios de tamaño 1
-      capa 2 ....
-      .
-      .
-      hasta el eficio más alto
-
-      Puede funcionar pero va a continuar dependiendo de la matriz para conocer
-      si puede contener agua (no está en el borde) y cuanto es lo máximo que 
-      puede contener basado en los edificios adyacentes
-
-      Sistema de alcantarillado puede buscarse con el grafo en dado caso
-    */
     val n = ciudad.size
     val m = ciudad[0].size
 
     val save1 = Array(n) { Array(m) {0} }
     val save2 = Array(n) { Array(m) {0} }
 
+    // Guardar la capacidad máxima respecto a los edificios horizontalmente
     for(i in 0 until n){
         var max = 0
         for (j in 0 until m){
@@ -48,6 +23,7 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
         }
     }
 
+    // Guardar la capacidad máxima respecto a los edificios verticalmente
     for(j in 0 until m){
         var max = 0
         for(i in 0 until n){
@@ -64,47 +40,33 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
     val grafo: Grafo<String> = ListaAdyacenciaGrafo()
 
     var atras = Pair("",-1)
+
     for(i in 0 until n){
         for(j in 0 until m){
             grafo.agregarVertice("${i}${j}", max(save1[i][j], ciudad[i][j]))
-            print("${save1[i][j]} ")
             if(ciudad[i][j] < save1[i][j] && atras.second == save1[i][j]){
                 grafo.conectar("${i}${j}", atras.first)
             }
             atras = Pair("${i}${j}", save1[i][j])
         }
-        println()
     }
-    println()
 
     for(i in 0 until n){
         for(j in 0 until m){
             if(save2[i][j] < grafo.lvlAgua("${i}${j}")) {
-                save1[i][j] = save2[i][j]
                 nivelarAgua(grafo, "${i}${j}", save2[i][j], ciudad)
             }
-            print("${save1[i][j]} ")
         }
-        println()
     }
 
-    println()
-
-    for(i in 0 until n){
-        for(j in 0 until m){
-            print("${grafo.lvlAgua("${i}${j}")} ")
-        }
-        println()
-    }
-
-    var tobos = 0
+    var cubos = 0
     for (i in 0 until n){
         for(j in 0 until m){
-            tobos = (grafo.lvlAgua("${i}${j}") - ciudad[i][j]) + tobos
+            cubos = (grafo.lvlAgua("${i}${j}") - ciudad[i][j]) + cubos
         }
     }
 
-    return tobos
+    return cubos
 }
 
 fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
@@ -117,6 +79,8 @@ fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
         visitados.put(t,true)
         val i = t[0] - '0'
         val j = t[1] - '0'
+
+        // Evita colocar el nivel de agua por debajo de la altura del edificio
         G.setLvl(t, max(s, ciudad[i][j]))
 
         for(e in G.obtenerArcosSalida(t)) {
@@ -125,6 +89,7 @@ fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
         }
     }
 }
+
 
 
 // Tomar datos del archivo de entrada atlantis.txt y almacenarlos
