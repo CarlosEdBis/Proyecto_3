@@ -6,48 +6,22 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
     val n = ciudad.size
     val m = ciudad[0].size
 
-    val save1 = Array(n) { Array(m) {0} }
-    val save2 = Array(n) { Array(m) {0} }
-
-    // Guardar la capacidad máxima respecto a los edificios horizontalmente
-    for(i in 0 until n){
-        var max = 0
-        for (j in 0 until m){
-            if(max < ciudad[i][j]) max = ciudad[i][j]
-            save1[i][j] = max
-        }
-        max = 0
-        for (j in m-1 downTo 0){
-            if(max < ciudad[i][j]) max = ciudad[i][j]
-            if(max < save1[i][j] ) save1[i][j] = max
-        }
-    }
-
-    // Guardar la capacidad máxima respecto a los edificios verticalmente
-    for(j in 0 until m){
-        var max = 0
-        for(i in 0 until n){
-            if(max < ciudad[i][j]) max = ciudad[i][j]
-            save2[i][j] = max
-        }
-        max = 0
-        for (i in n-1 downTo 0){
-            if(max < ciudad[i][j]) max = ciudad[i][j]
-            if(max < save2[i][j] ) save2[i][j] = max
-        }
-    }
+    val save1 = capH(n, m, ciudad)
+    val save2 = capV(n, m, ciudad)
 
     val grafo: Grafo<String> = ListaAdyacenciaGrafo()
 
-    var atras = Pair("",-1)
-
     for(i in 0 until n){
-        for(j in 0 until m){
-            grafo.agregarVertice("${i}${j}", max(save1[i][j], ciudad[i][j]))
-            if(ciudad[i][j] < save1[i][j] && atras.second == save1[i][j]){
-                grafo.conectar("${i}${j}", atras.first)
+        grafo.agregarVertice("${i}0", save1[i][0])
+        var anterior = Pair("${i}0",save1[i][0])
+
+        for(j in 1 until m){
+            grafo.agregarVertice("${i}${j}", save1[i][j])
+
+            if(anterior.second > ciudad[i][j]){
+                grafo.conectar("${i}${j}", anterior.first)
             }
-            atras = Pair("${i}${j}", save1[i][j])
+            anterior = Pair("${i}${j}", save1[i][j])
         }
     }
 
@@ -67,6 +41,44 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
     }
 
     return cubos
+}
+
+// Retorna la capacidad máxima de agua que se puede contener respecto a los edificios horizontalmente
+fun capH(n: Int, m: Int, ciudad: List<List<Int>>): Array<Array<Int>>{
+    var s = Array(n) { Array(m) {0} }
+
+    for(i in 0 until n){
+        var max = 0
+        for (j in 0 until m){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            s[i][j] = max
+        }
+        max = 0
+        for (j in m-1 downTo 0){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            if(max < s[i][j]) s[i][j] = max
+        }
+    }
+    return s
+}
+
+// Retorna la capacidad máxima de agua que se puede contener respecto a los edificios verticalmente
+fun capV(n: Int, m: Int, ciudad: List<List<Int>>): Array<Array<Int>>{
+    var s = Array(n) { Array(m) {0} }
+
+    for(j in 0 until m){
+        var max = 0
+        for(i in 0 until n){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            s[i][j] = max
+        }
+        max = 0
+        for (i in n-1 downTo 0){
+            if(max < ciudad[i][j]) max = ciudad[i][j]
+            if(max < s[i][j] ) s[i][j] = max
+        }
+    }
+    return s
 }
 
 fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
@@ -89,8 +101,6 @@ fun nivelarAgua(G: Grafo<String>, v: String, s: Int, ciudad: List<List<Int>>){
         }
     }
 }
-
-
 
 // Tomar datos del archivo de entrada atlantis.txt y almacenarlos
 fun entrada(): List<List<Int>>{
