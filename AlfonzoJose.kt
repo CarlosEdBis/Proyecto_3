@@ -13,15 +13,17 @@ fun cubosDeAgua(ciudad: List<List<Int>>): Int{
 
     for(i in 0 until n){
         grafo.agregarVertice("${i}0", save1[i][0])
-        var anterior = Pair("${i}0",save1[i][0])
+
+        // Almacena el "nombre" del vértice y si contiene agua o no
+        var anterior = Pair("${i}0", false)
 
         for(j in 1 until m){
             grafo.agregarVertice("${i}${j}", save1[i][j])
 
-            if(anterior.second > ciudad[i][j]){
+            if(anterior.second && save1[i][j] > ciudad[i][j]){
                 grafo.conectar("${i}${j}", anterior.first)
             }
-            anterior = Pair("${i}${j}", save1[i][j])
+            anterior = Pair("${i}${j}", save1[i][j] > ciudad[i][j])
         }
     }
 
