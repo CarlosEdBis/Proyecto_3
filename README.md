@@ -28,6 +28,6 @@ Esta funcion construye ciudad a partir del documente atlantis.txt, toma cada lin
 
 Es la función principal del programa; coordina los cálculos de capV y capH y organiza la ciudad en forma de grafo. Se encarga de llamar a la nivelación del agua y, finalmente, calcula cuántos cubos se necesitan restando la altura de cada edificio a su nivel de agua final.
 
-# adyacencia(conexion de vertices)
+### adyacencia(conexion de vertices)
 
 Dos vertices son adyacentes si sus edificios originales estan pegados en la ciduad y ambos tienen al menos un cubo de agua y esta se ve plasmada cuando dos vertices del grafo se conectan
