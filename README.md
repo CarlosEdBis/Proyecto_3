@@ -18,7 +18,7 @@ Recorre la matriz ciudad por columnas, de arriba a abajo y viceversa, para halla
 
 ## nivelarAgua
 
-Implementa un algoritmo de propagación (basado en un recorrido de grafos) que ajusta el nivel del agua en cada celda. Su función principal es corregir inconsistencias de altura, asegurando que el nivel de agua en un punto no supere la capacidad de contención de sus edificios vecinos, propagando este ajuste de forma recursiva a todos los vértices adyacentes para evitar desbordamientos simulados.
+Ajusta el nivel del agua en cada celda para asegurar que no sea más alto de lo que sus edificios vecinos pueden contener. Si encuentra que el agua se desbordaría, reduce el nivel y propaga este cambio a los edificios de al lado, garantizando que el agua se mantenga estable en toda la ciudad, todo esto lo hace recorriendo una cola de prioridad y si el edificio es mas alto que el agua que este soporta se guarda su altura para evitar conflictos
 
 ## entrada
 
@@ -26,7 +26,7 @@ Esta funcion construye ciudad a partir del documente atlantis.txt, toma cada lin
 
 ## cubosDeAgua
 
-Actúa como la unidad central de procesamiento del programa. Coordina la ejecución de las funciones capV y capH, construye la representación de la ciudad mediante una estructura de grafo de adyacencia y supervisa el proceso de nivelación. Finalmente, realiza el cálculo volumétrico restando la altura física de cada edificio a su nivel de agua final, acumulando el resultado para determinar la cantidad total de cubos necesarios.
+Es la función principal del programa; coordina los cálculos de capV y capH y organiza la ciudad en forma de grafo. Se encarga de llamar a la nivelación del agua y, finalmente, calcula cuántos cubos se necesitan restando la altura de cada edificio a su nivel de agua final.
 
 # adyacencia(conexion de vertices)
 
