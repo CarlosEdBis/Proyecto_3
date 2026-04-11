@@ -16,15 +16,9 @@ Recorre la matriz ciudad por filas, de derecha a izquierda y viceversa, para hal
 
 Recorre la matriz ciudad por columnas, de arriba a abajo y viceversa, para hallar la altura máxima hasta la cual se pueden agregar cubos de agua sin que esta se desborde respecto a los edificios verticalmente. Cada valor es almacenado en una matriz que posteriormente se retorna.
 
-## adyacencia
-
-Dos vertices son adyacentes si sus edificios originales estan pegados en la ciduad y ambos tienen al menos un cubo de agua
-
 ## nivelarAgua
 
-m
-
-Modifica el nivel del agua y lo va propagando a sus vertices adyacentes
+Implementa un algoritmo de propagación (basado en un recorrido de grafos) que ajusta el nivel del agua en cada celda. Su función principal es corregir inconsistencias de altura, asegurando que el nivel de agua en un punto no supere la capacidad de contención de sus edificios vecinos, propagando este ajuste de forma recursiva a todos los vértices adyacentes para evitar desbordamientos simulados.
 
 ## entrada
 
@@ -32,4 +26,8 @@ Esta funcion construye ciudad a partir del documente atlantis.txt, toma cada lin
 
 ## cubosDeAgua
 
-Es el corazon del programa ya que se encarga de los llamados de capV y capH, maneja el creado de la representacion de grafo de la matriz, llama a la funcion nivelar agua y calcula con cuantos tobos se va a llenar la ciudad.
+Actúa como la unidad central de procesamiento del programa. Coordina la ejecución de las funciones capV y capH, construye la representación de la ciudad mediante una estructura de grafo de adyacencia y supervisa el proceso de nivelación. Finalmente, realiza el cálculo volumétrico restando la altura física de cada edificio a su nivel de agua final, acumulando el resultado para determinar la cantidad total de cubos necesarios.
+
+# adyacencia(conexion de vertices)
+
+Dos vertices son adyacentes si sus edificios originales estan pegados en la ciduad y ambos tienen al menos un cubo de agua y esta se ve plasmada cuando dos vertices del grafo se conectan
